@@ -6,19 +6,21 @@ class SwapChain
 {
 public:
 	SwapChain();
-	// Initialize Swap Chain for a window.
+	//Initialize SwapChain for a window
 	bool init(HWND hwnd, UINT width, UINT height);
 
 
 	bool present(bool vsync);
 
-	// Release the Swap Chain.
+	//Release the swap chain
 	bool release();
 	~SwapChain();
 private:
 	IDXGISwapChain* m_swap_chain;
 	ID3D11RenderTargetView* m_rtv;
+	ID3D11DepthStencilView* m_dsv;
+
+
 private:
 	friend class DeviceContext;
 };
-
