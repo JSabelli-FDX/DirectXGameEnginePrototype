@@ -1,8 +1,7 @@
 #include "AppWindow.h"
+#include <Windows.h>
 #include "Vector3D.h"
 #include "Matrix4x4.h"
-#include <Windows.h>
-
 
 struct vertex
 {
@@ -32,21 +31,34 @@ void AppWindow::updateQuadPosition()
 	constant cc;
 	cc.m_time = ::GetTickCount();
 
-	cc.m_world.setTranslation(Vector3D(0, 0, 0));
-	cc.m_view.setIndentity();
+	m_delta_pos += m_delta_time / 10.0f;
+	if (m_delta_pos > 1.0f)
+		m_delta_pos = 0;
+
+
+	Matrix4x4 temp;
+
+	m_delta_scale += m_delta_time / 0.15f;
+
+	cc.m_world.setScale(Vector3D::lerp(Vector3D(0.5, 0.5, 0), Vector3D(1.0f, 1.0f, 0), (sin(m_delta_scale) + 1.0f) / 2.0f));
+
+	temp.setTranslation(Vector3D::lerp(Vector3D(-1.5f, -1.5f, 0), Vector3D(1.5f, 1.5f, 0), m_delta_pos));
+
+	cc.m_world *= temp;
+
+
+
+
+
+
+	cc.m_view.setIdentity();
 	cc.m_proj.setOrthoLH
 	(
-		(this->getClientWindowRect().right - this->getClientWindowRect().left)/400.0f,
-		(this->getClientWindowRect().bottom - this->getClientWindowRect().top)/400.0f,
+		(this->getClientWindowRect().right - this->getClientWindowRect().left) / 400.0f,
+		(this->getClientWindowRect().bottom - this->getClientWindowRect().top) / 400.0f,
 		-4.0f,
 		4.0f
 	);
-
-
-
-
-
-
 
 
 	m_cb->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
@@ -69,10 +81,10 @@ void AppWindow::onCreate()
 	vertex list[] =
 	{
 		//X - Y - Z
-		{Vector3D(- 0.5f,-0.5f,0.0f),   Vector3D(-0.32f,-0.11f,0.0f),  Vector3D(0,0,0),  Vector3D(0,1,0)}, // POS1
-		{Vector3D(-0.5f,0.5f,0.0f),     Vector3D(-0.11f,0.78f,0.0f),   Vector3D(1,1,0),  Vector3D(0,1,1)}, // POS2
-		{Vector3D(0.5f,-0.5f,0.0f),     Vector3D(0.75f,-0.73f,0.0f),   Vector3D(0,0,1),  Vector3D(1,0,0)}, // POS2
-		{Vector3D(0.5f,0.5f,0.0f),      Vector3D(0.88f,0.77f,0.0f),    Vector3D(1,1,1),  Vector3D(0,0,1)}
+		{Vector3D(-0.5f,-0.5f,0.0f),    Vector3D(-0.32f,-0.11f,0.0f),   Vector3D(0,0,0), Vector3D(0,1,0) }, // POS1
+		{Vector3D(-0.5f,0.5f,0.0f),     Vector3D(-0.11f,0.78f,0.0f),   Vector3D(1,1,0), Vector3D(0,1,1) }, // POS2
+		{ Vector3D(0.5f,-0.5f,0.0f),     Vector3D(0.75f,-0.73f,0.0f), Vector3D(0,0,1),  Vector3D(1,0,0) },// POS2
+		{ Vector3D(0.5f,0.5f,0.0f),     Vector3D(0.88f,0.77f,0.0f),    Vector3D(1,1,1), Vector3D(0,0,1) }
 	};
 
 	m_vb = GraphicsEngine::get()->createVertexBuffer();
@@ -113,9 +125,7 @@ void AppWindow::onUpdate()
 
 
 
-
 	updateQuadPosition();
-
 
 
 
@@ -134,6 +144,12 @@ void AppWindow::onUpdate()
 	// FINALLY DRAW THE TRIANGLE
 	GraphicsEngine::get()->getImmediateDeviceContext()->drawTriangleStrip(m_vb->getSizeVertexList(), 0);
 	m_swap_chain->present(true);
+
+
+	m_old_delta = m_new_delta;
+	m_new_delta = ::GetTickCount();
+
+	m_delta_time = (m_old_delta) ? ((m_new_delta - m_old_delta) / 1000.0f) : 0;
 }
 
 void AppWindow::onDestroy()
