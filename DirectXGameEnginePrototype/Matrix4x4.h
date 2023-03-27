@@ -33,21 +33,21 @@ public:
 		m_mat[2][2] = scale.m_z;
 	}
 
-	void setRotationX(float x) {
+	void setRotationX(double x) {
 		m_mat[1][1] = cos(x);
 		m_mat[1][2] = sin(x);
 		m_mat[2][1] = -sin(x);
 		m_mat[2][2] = cos(x);
 	}
 
-	void setRotationY(float y) {
+	void setRotationY(double y) {
 		m_mat[0][0] = cos(y);
 		m_mat[0][2] = -sin(y);
 		m_mat[2][0] = sin(y);
 		m_mat[2][2] = cos(y);
 	}
 
-	void setRotationZ(float z) {
+	void setRotationZ(double z) {
 		m_mat[0][0] = cos(z);
 		m_mat[0][1] = sin(z);
 		m_mat[1][0] = -sin(z);
