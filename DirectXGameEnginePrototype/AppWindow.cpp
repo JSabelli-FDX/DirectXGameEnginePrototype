@@ -46,7 +46,7 @@ void AppWindow::updateQuadPosition()
 
 	//cc.m_world *= temp;
 
-	cc.m_world.setScale(Vector3D(1, 1, 1));
+	cc.m_world.setScale(Vector3D(m_scale_cube, m_scale_cube, m_scale_cube));
 
 	temp.setIdentity();
 	temp.setRotationZ(0.0f);
@@ -174,7 +174,7 @@ void AppWindow::onUpdate()
 
 	//CLEAR THE RENDER TARGET 
 	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain,
-		0, 0.3f, 0.4f, 1);
+		0.15f, 0.15f, 0.15f, 1);
 	//SET VIEWPORT OF RENDER TARGET IN WHICH WE HAVE TO DRAW
 	RECT rc = this->getClientWindowRect();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
@@ -224,12 +224,17 @@ void AppWindow::onDestroy()
 	GraphicsEngine::get()->release();
 }
 
-void AppWindow::onKeyDown(int key)
+void AppWindow::onFocus()
 {
-	
+	InputSystem::get()->addListener(this);
 }
 
-void AppWindow::onKeyUp(int key)
+void AppWindow::onKillFocus()
+{
+	InputSystem::get()->removeListener(this);
+}
+
+void AppWindow::onKeyDown(int key)
 {
 	if (key == 'W') {
 		m_rot_x += 3.14f * m_delta_time;
@@ -243,4 +248,35 @@ void AppWindow::onKeyUp(int key)
 	else if (key == 'D') {
 		m_rot_y -= 3.14f * m_delta_time;
 	}
+}
+
+void AppWindow::onKeyUp(int key)
+{
+	
+}
+
+void AppWindow::onMouseMove(const Point& delta_mouse_pos)
+{
+	m_rot_x -= delta_mouse_pos.m_y * m_delta_time;
+	m_rot_y -= delta_mouse_pos.m_x * m_delta_time;
+}
+
+void AppWindow::onLeftMouseDown(const Point& mouse_pos)
+{
+	m_scale_cube = 0.5f;
+}
+
+void AppWindow::onLeftMouseUp(const Point& mouse_pos)
+{
+	m_scale_cube = 1.0f;
+}
+
+void AppWindow::onRightMouseDown(const Point& mouse_pos)
+{
+	m_scale_cube = 2.0f;
+}
+
+void AppWindow::onRightMouseUp(const Point& mouse_pos)
+{
+	m_scale_cube = 1.0f;
 }
