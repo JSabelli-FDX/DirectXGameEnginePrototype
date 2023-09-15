@@ -26,7 +26,7 @@ AppWindow::AppWindow()
 {
 }
 
-void AppWindow::updateQuadPosition()
+void AppWindow::update()
 {
 	constant cc;
 	cc.m_time = ::GetTickCount64();
@@ -46,6 +46,7 @@ void AppWindow::updateQuadPosition()
 
 	//cc.m_world *= temp;
 
+	/*
 	cc.m_world.setScale(Vector3D(m_scale_cube, m_scale_cube, m_scale_cube));
 
 	temp.setIdentity();
@@ -59,8 +60,28 @@ void AppWindow::updateQuadPosition()
 	temp.setIdentity();
 	temp.setRotationX(m_rot_x);
 	cc.m_world *= temp;
+	*/
 
-	cc.m_view.setIdentity();
+	cc.m_world.setIdentity();
+
+	Matrix4x4 world_cam;
+
+	world_cam.setIdentity();
+	temp.setIdentity();
+	temp.setRotationX(m_rot_x);
+	world_cam *= temp;
+
+	temp.setIdentity();
+	temp.setRotationY(m_rot_y);
+	world_cam *= temp;
+
+	world_cam.setTranslation(Vector3D(0, 0, -2));
+
+	world_cam.inverse();
+
+	cc.m_view = world_cam;
+	
+	/*
 	cc.m_proj.setOrthoLH
 	(
 		(this->getClientWindowRect().right - this->getClientWindowRect().left) / 300.0f,
@@ -68,7 +89,12 @@ void AppWindow::updateQuadPosition()
 		-4.0f,
 		4.0f
 	);
+	*/
 
+	int width = (this->getClientWindowRect().right - this->getClientWindowRect().left);
+	int height = (this->getClientWindowRect().bottom - this->getClientWindowRect().top);
+
+	cc.m_proj.setPerspectiveFovLH(1.57f, ((float)width / (float)height), 0.1f, 100.0f);
 
 	m_cb->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
 }
@@ -182,7 +208,7 @@ void AppWindow::onUpdate()
 
 
 
-	updateQuadPosition();
+	update();
 
 
 
