@@ -226,11 +226,6 @@ void AppWindow::onDestroy()
 
 void AppWindow::onKeyDown(int key)
 {
-	
-}
-
-void AppWindow::onKeyUp(int key)
-{
 	if (key == 'W') {
 		m_rot_x += 3.14f * m_delta_time;
 	}
@@ -243,4 +238,9 @@ void AppWindow::onKeyUp(int key)
 	else if (key == 'D') {
 		m_rot_y -= 3.14f * m_delta_time;
 	}
+}
+
+void AppWindow::onKeyUp(int key)
+{
+	
 }
