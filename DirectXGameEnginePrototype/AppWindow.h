@@ -44,10 +44,10 @@ private:
 	PixelShaderPtr m_ps;
 	ConstantBufferPtr m_cb;
 	IndexBufferPtr m_ib;
-
+	TexturePtr m_wood_tex;
 private:
-	ULONGLONG m_old_delta;
-	ULONGLONG m_new_delta;
+	long m_old_delta;
+	long m_new_delta;
 	float m_delta_time;
 
 	float m_delta_pos;
@@ -60,8 +60,6 @@ private:
 	float m_scale_cube = 1;
 	float m_forward = 0.0f;
 	float m_rightward = 0.0f;
-
 	Matrix4x4 m_world_cam;
 };
-
 
